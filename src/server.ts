@@ -19,6 +19,7 @@ import { SignalTracker, getSignalAccounts, checkSignalNumber } from './signal-tr
 
 // Configuration
 const SIGNAL_API_URL = process.env.SIGNAL_API_URL || 'http://localhost:8080';
+const SIGNAL_API_PUBLIC_URL = process.env.SIGNAL_API_PUBLIC_URL || SIGNAL_API_URL;
 
 const app = express();
 app.use(cors());
@@ -184,7 +185,7 @@ async function startSignalLinking() {
 
         // signal-cli-rest-api returns the QR code as a PNG image directly
         // Send the URL to the frontend to display as an image
-        currentSignalQrUrl = `${SIGNAL_API_URL}/v1/qrcodelink?device_name=activity-tracker&t=${Date.now()}`;
+        currentSignalQrUrl = `${SIGNAL_API_PUBLIC_URL}/v1/qrcodelink?device_name=activity-tracker&t=${Date.now()}`;
         console.log('[SIGNAL] Emitting QR image URL:', currentSignalQrUrl);
         io.emit('signal-qr-image', currentSignalQrUrl);
 

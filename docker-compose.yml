@@ -32,6 +32,7 @@ services:
     restart: unless-stopped
     environment:
       - SIGNAL_API_URL=${SIGNAL_API_URL:-http://signal-api:8080}
+      - SIGNAL_API_PUBLIC_URL=${SIGNAL_API_PUBLIC_URL:-http://localhost:${SIGNAL_API_EXPOSED_PORT:-8080}}
       - PORT=${SERVER_INTERNAL_PORT:-3001}
       - BAILEYS_AUTH_DIR=${BAILEYS_AUTH_DIR:-baileys_auth_info}
       - NODE_ENV=${NODE_ENV:-production}
