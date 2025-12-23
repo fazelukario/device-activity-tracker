@@ -2,6 +2,9 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
+# Install git and build dependencies
+RUN apk add --no-cache git
+
 # Copy package files
 COPY package*.json ./
 
