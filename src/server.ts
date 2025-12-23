@@ -49,7 +49,8 @@ interface TrackerEntry {
 const trackers: Map<string, TrackerEntry> = new Map(); // JID/Number -> Tracker entry
 
 async function connectToWhatsApp() {
-    const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
+    const authDir = process.env.BAILEYS_AUTH_DIR || 'baileys_auth_info';
+    const { state, saveCreds } = await useMultiFileAuthState(authDir);
 
     sock = makeWASocket({
         auth: state,
@@ -423,7 +424,7 @@ io.on('connection', (socket) => {
     });
 });
 
-const PORT = 3001;
+const PORT = parseInt(process.env.PORT || '3001', 10);
 httpServer.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

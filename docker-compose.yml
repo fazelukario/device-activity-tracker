@@ -1,0 +1,48 @@
+services:
+  client-builder:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:3001}
+    container_name: client-builder
+    restart: "no"
+    volumes:
+      - ./client/build:/dist
+
+  signal-api:
+    image: bbernhard/signal-cli-rest-api
+    container_name: signal-api
+    restart: unless-stopped
+    environment:
+      - MODE=json-rpc
+    #ports:
+    #  - "8080:8080"
+    volumes:
+      - signal_data:/home/.local/share/signal-cli
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        EXPOSE_PORT: ${SERVER_INTERNAL_PORT:-3001}
+        BAILEYS_AUTH_DIR: ${BAILEYS_AUTH_DIR:-baileys_auth_info}
+    container_name: server
+    restart: unless-stopped
+    environment:
+      - SIGNAL_API_URL=http://signal-api:8080
+      - PORT=${SERVER_INTERNAL_PORT:-3001}
+      - BAILEYS_AUTH_DIR=${BAILEYS_AUTH_DIR:-baileys_auth_info}
+      - NODE_ENV=${NODE_ENV:-production}
+    ports:
+      - "${SERVER_EXPOSED_PORT:-3001}:${SERVER_INTERNAL_PORT:-3001}"
+    volumes:
+      - baileys_auth_info:/app/${BAILEYS_AUTH_DIR:-baileys_auth_info}
+    depends_on:
+      signal-api:
+        condition: service_healthy
+
+volumes:
+  signal_data:
+  baileys_auth_info:
