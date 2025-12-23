@@ -5,14 +5,14 @@ services:
       dockerfile: Dockerfile
       args:
         REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:3001}
-    container_name: client-builder
+    #container_name: client-builder
     restart: "no"
     volumes:
       - ./client/build:/dist
 
   signal-api:
     image: bbernhard/signal-cli-rest-api
-    container_name: signal-api
+    #container_name: signal-api
     restart: unless-stopped
     environment:
       - MODE=json-rpc
@@ -28,7 +28,7 @@ services:
       args:
         EXPOSE_PORT: ${SERVER_INTERNAL_PORT:-3001}
         BAILEYS_AUTH_DIR: ${BAILEYS_AUTH_DIR:-baileys_auth_info}
-    container_name: server
+    #container_name: server
     restart: unless-stopped
     environment:
       - SIGNAL_API_URL=${SIGNAL_API_URL:-http://signal-api:8080}
