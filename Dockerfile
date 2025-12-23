@@ -23,9 +23,16 @@ FROM node:20-alpine AS runtime
 
 WORKDIR /app
 
+# Install git and build dependencies
+RUN apk add --no-cache git
+
+# Copy package files
 COPY package*.json ./
+
+# Install dependencies (ignore postinstall script that tries to install client deps and dev dependencies)
 RUN npm install --omit=dev --ignore-scripts
 
+# Copy built server code
 COPY --from=build /app/dist ./dist
 
 # Persist Baileys multi-file auth state
